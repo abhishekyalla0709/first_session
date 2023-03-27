@@ -1,0 +1,426 @@
+WebService: it is one kind of webapplication which will generate the data (in json, xml)
+instead of generating the view(html).
+
+1.SOAP based
+2.Restfull 
+
+
+Json object:
+==========
+
+example 1:
+------------- 
+public class Student {
+	
+	private int roll;
+	private String name;
+	private String address;
+	private int marks;
+//getters and setters
+}
+
+
+Student s1 = new Student(10,"Ram","Kolkata",800);
+
+--for the above object  will be represented in Json as follows:
+
+{
+"roll": 10,
+"name": "Ram",
+"address": "Kolkata",
+"marks": 800
+}
+
+
+example2: nested json object:
+
+class Address{
+
+private String state;
+private String city;
+private String pincode;
+
+//getters and setters
+}
+
+
+public class Student {
+	
+	private int roll;
+	private String name;
+	private int marks;
+	private Address addr;    // has-A relationship
+
+//getters and setters
+}
+
+--Json representation of above class object:
+
+
+{
+"roll": 10,
+"name": "Ram",
+"marks": 800,
+"addr": {
+	"state": "Tamilnadu",
+	"city": "chennai",
+	"pincode": "7885452"
+	}
+}
+
+
+List of Student object as Json :
+
+[
+{"roll": 10,"name": "ram","marks": 800},
+{"roll": 12,"name": "ramesh","marks": 810},
+{"roll": 14,"name": "amit","marks": 820},
+
+]
+
+returning List of Student object as a Rest api:
+--------------------------------------------------------
+
+
+
+	@RequestMapping("/students")
+	public List<Student> getStudentsHandler() {
+		
+		
+		List<Student> students= new ArrayList<>();
+		students.add(new Student(10, "Ram", "delhi", 850));
+		students.add(new Student(12, "Ram", "delhi", 850));
+		students.add(new Student(14, "Ram", "delhi", 850));
+		students.add(new Student(15, "Ram", "delhi", 850));
+		
+		return students;
+	}
+	
+
+Note: internally Spring boot uses Jackson api with the help of some HttpMessageConverters to convert the domain bean class object to the json format.
+
+
+port number: 
+-----------------
+--it is a logical number(address) on that an application used to run. and the default port of tomcat server is 8080.
+
+--but we should change this port number with our choice also.(because 8080 is common port number)
+
+custom port number range should be: 2999-9999
+
+--to change the port number : inside the application.properties file make the following entry:
+
+server.port=8088
+
+Note: we can give the server port as 0 also. with this every time our application
+will be started on different port number.
+
+ex:
+
+server.port=0
+
+
+Note: we can provide the mapping information for an end-point in following ways:
+
+//@RequestMapping("/students") // GET is the default method, need not mention
+//@RequestMapping(value =  "/students", method = RequestMethod.GET) //Json is the default convertion type
+//@RequestMapping(value =  "/students", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE )
+@GetMapping("/students") // it is the shortcut type
+
+	public List<Student> getStudentsHandler() {
+		
+		
+		List<Student> students= new ArrayList<>();
+		students.add(new Student(10, "Ram", "delhi", 850));
+		students.add(new Student(12, "Ram", "delhi", 850));
+		students.add(new Student(14, "Ram", "delhi", 850));
+		students.add(new Student(15, "Ram", "delhi", 850));
+		
+		return students;
+	}
+
+
+
+--the default conversion type is JSON type, but we can tell to the Spring boot to consume or produces diff type of data also, ex: xml data.
+
+--to get the data in the xml format we need to add following dependency inside the pom.xml
+
+
+<dependency>
+    <groupId>com.fasterxml.jackson.dataformat</groupId>
+    <artifactId>jackson-dataformat-xml</artifactId>
+    <version>2.14.2</version>
+</dependency>
+
+
+--once we add the dependency inside our application then the defaul convertion type will be xml instaed of JSON.
+
+
+uri for root resource:
+================
+
+--we can provide the uri for the root resource also i.e to the controller class using @RequestMapping annotation.
+
+ex:
+
+
+@RestController 
+@RequestMapping("/app")
+public class MyController {
+
+
+@GetMapping(value =  "/students", produces = MediaType.APPLICATION_JSON_VALUE) // it is the shortcut type
+	public List<Student> getStudentsHandler() {
+		
+		
+		List<Student> students= new ArrayList<>();
+		students.add(new Student(10, "Ram", "delhi", 850));
+		students.add(new Student(12, "Ram", "delhi", 850));
+		students.add(new Student(14, "Ram", "delhi", 850));
+		students.add(new Student(15, "Ram", "delhi", 850));
+		
+		return students;
+	}
+	
+	
+
+}
+
+
+http://localhost:8080/app/students
+
+
+
+Devtools:
+========
+
+--in order to auto-deploy our spring boot application once we made any changes inside our application(Hot module reloding)
+
+--for that we need to add devtools dependency inside our pom.xml.
+
+
+Handling the client data:
+====================
+
+--we can send some data for processing from the client to our application:
+
+1. using path variable  : it does not have the key, we need to send the data along with request uri path.
+
+ex:
+
+/students/10  : here 10 is a pathvariable
+
+/students/10/ram/800  : here 10, Ram, 800  are the pathvariables.
+
+
+
+2. using request parameter : it is the combination of key-value pair.
+
+/students?roll=10   : here roll=10 is one request parameter.
+
+
+/students?roll=10&name=ram&marks=700   : here roll=10 , name=ram, marks=700 are the request parameters.
+
+3.using Http request body : POST, PUT : json data or xml data
+
+
+1. using path variable:
+---------------------------
+
+	@RequestMapping("/students/{r}")
+	public Student getStudentHandler(@PathVariable("r") int roll) {
+		
+		Student s1 = new Student(roll, "ram", "delhi", 800);
+		
+		return s1;
+	}
+
+or 
+
+@RequestMapping("/students/{roll}")
+	public Student getStudentHandler(@PathVariable int roll) {
+		
+		Student s1 = new Student(roll, "ram", "delhi", 800);
+		
+		return s1;
+	}
+
+
+**Note: inside our Spring Boot application we should always use the Wrapper classes instead of using primitivies inside the bean class.
+
+
+
+public class Student {
+	
+	private Integer roll;
+	private String name;
+	private String address;
+	private Integer marks;
+	
+	//getters and setters
+	
+}
+
+
+
+2. sending the data using request parameter:
+-------------------------------------------------------
+
+
+	@RequestMapping("/students")
+	public Student getStudentHandler(@RequestParam("r") int roll) {
+		
+		Student s1 = new Student(roll, "ram", "delhi", 800);
+		
+		return s1;
+	}
+
+
+http://localhost:8080/app/students?r=80
+
+
+--by default @RequestParam is mandatory, to make it optional we need to use following approach:
+
+example:
+
+	@RequestMapping("/students")
+	public Student getStudentHandler(@RequestParam(value= "r", required = false) int roll) {
+		
+		Student s1 = new Student(roll, "ram", "delhi", 800);
+		
+		return s1;
+	}
+
+
+--here if we don't pass the value of request parameter then we get an exception 
+at runtime. to solve this problem we should make use of wrapper classes 
+instead of using primitives.
+
+example:
+
+@RequestMapping("/students")
+public Student getStudentHandler(@RequestParam(value= "r", required = false)Integer roll) {
+		
+		Student s1 = new Student(roll, "ram", "delhi", 800);
+		
+		return s1;
+	}
+
+sending multiple request parameters:
+==============================
+
+
+@RequestMapping("/students")
+public Student getStudentHandler(@RequestParam("r")Integer roll, 
+			@RequestParam("n") String name, 
+			@RequestParam("m") Integer marks) {
+		
+		Student s1 = new Student(roll, name, "delhi", marks);
+		
+		return s1;
+		
+		}
+
+
+
+http://localhost:8080/app/students?r=80&n=ratan&m=500
+
+
+
+combining the pathvariable with request parameter:
+========================================
+
+--here pathvariable should come first then only we need make use of request parameter.
+
+ex:
+
+
+http://localhost:8080/app/students/10?marks=600 
+
+here 10 is the path variable where marks=600 is the request parameter.
+
+
+@RequestMapping("/students/{roll}")
+public Student getStudentHandler(@PathVariable Integer roll, @RequestParam(value = "marks", required = false) Integer marks) {
+		
+		Student s1 = new Student(roll, "Ram", "delhi", marks);
+		
+		return s1;
+	}
+	
+	
+
+http://localhost:8080/app/students/20       //here marks will be null
+
+
+Naming convention of API endpoint:
+==============================
+
+--we should always take the uri name as pulural noun and the action should be 
+represnted by the http methods.
+
+example:
+
+to get all the students details :  @GetMapping("/students")
+
+to get a single student detail: @GetMapping("/students/10")
+
+
+Note: inside a spring boot application we should  not keep the same uri name with the 
+same http method of other api.(same uri name and same http method should not be repeated) it will throw an exception at runtime.
+
+to delete a student details :  @DeleteMapping("/students/10")
+
+to update an existing student details:   @PutMapping("/students/10") : and from the request body of http we need tp pass the Student object using which existing student object will be updated.
+
+--to add a new student details:   @PostMapping("/students") :and from the request body of http we need tp pass the Student object which we want to add.
+
+
+--to get all the course details for a perticular student:
+
+@GetMapping("/students/{roll}/courses")
+
+--to add a new course to the a perticular student:
+
+@PostMapping("/students/{roll}/courses")
+
+
+3. sending the data using http request body:
+===================================
+
+@PostMapping(value =  "/students", consumes = MediaType.APPLICATION_JSON_VALUE)
+public String saveStudentHandler(@RequestBody Student student) {
+		
+		// we can take the help of DB to store the student object.
+		
+		return "Student saved, "+student;
+		
+	}
+
+
+or
+
+
+	@PostMapping("/students")
+	public String saveStudentHandler(@RequestBody Student student) {
+		
+		// we can take the help of DB to store the student object.
+		
+		return "Student saved, "+student;
+		
+	}
+
+
+
+Not: we can not send other than GET request using browser URL, to send the 
+other type of http request we need to make use of http-clients like 
+Postman s/w, swagger or Talend api.
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,487 @@
+# Spring Boot:
+
+- Spring Boot is a project that is built on the top of the Spring Framework. It provides an easier and faster way to set up, configure, and run both simple and web-based applications.
+- It is a spring platform that mainly focuses on convention over configuration.
+- Spring boot is not a framework software, it is a just spring application development platform that provides RAD(rapid application development) features to the spring framework.
+- With the spring boot, our spring application development process will be simplified.
+- Spring boot supports auto-configurations
+- It provides an integrated tomcat server, so we can develop a **Web-based applications** without installing the Webserver separately.
+- With the help of spring boot, we can develop **Web-application, web services, microservices, and spring cloud-based applications** very easily.
+
+## There are various ways to use spring boot to develop a spring application:
+
+1. Installing STS software
+2. installing the STS plugin in normal eclipse software
+3. By using the Spring initializer website
+4. By using Maven or Gradle application.
+5. By using Spring Boot CLI (Command Line interface)
+
+### **Developing a Spring Boot starter project using STS software (Standalone or Simple Spring application):**
+
+Step 1: create a new spring starter project in the STS software:
+
+File → New → Spring Starter Project → provide the Name (App1), group, artifact of the project → next → for a simple application, don’t select any dependencies →next → finish.
+
+The above step will generate a basic spring boot application (a maven project) with all the initial configurations.
+
+The above project skeleton will have a spring boot configuration file **applicaiton.properties**  inside the **src/main/resources** folder.
+
+and one Main launcher class(App1Application) inside the **src/main/java** folder.
+
+The Main Launcher class is annotated with **@SpringBootApplication** annotation.
+
+Example:
+
+```java
+package com.masai;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class App1Application {
+
+	public static void main(String[] args) {
+		SpringApplication.run(App1Application.class, args);
+	}
+
+}
+```
+
+This **@SpringBootApplication** annotation is a combination of: 
+
+**@Configuration:** (This annotation marks a class as a Configuration class for Java-based configuration)
+
+**@ComponentScan:** (here the base package is in which package this class belongs)
+
+**@EnableAutoConfiguration:** (to enable Spring Boot's auto-configuration feature)
+
+   
+
+In the above application **SpringApplication.run(App1Application.class, args);** will return **ApplicationContext** container, we can pull any spring bean object and can call the business method on it.
+
+Example:
+
+Develop another class A.java inside the same package and register this class with the Spring container by applying a stereotype annotation on it.
+
+ 
+
+```java
+A.java:
+-------
+
+package com,masai;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class A {
+
+	public void funA() {
+		System.out.println("inside funA of A");
+	}
+}
+
+```
+
+Since the above class A is annotated with @Service annotation, it will be automatically registered with the spring container with the id **‘a’** :
+
+Example: Inside the main application we can pull the A class object and can call funA() method.
+
+```java
+
+package com.masai;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+
+@SpringBootApplication
+public class App1Application {
+
+	public static void main(String[] args) {
+		ApplicationContext ctx= SpringApplication.run(App1Application.class, args);
+		
+		A a1= ctx.getBean("a", A.class);
+		
+		a1.funA();
+		
+	}
+
+}
+```
+
+### **Spring vs. Spring Boot:**
+
+**Spring:** Spring Framework is the most popular application development framework of Java. The main feature of the Spring Framework is **dependency Injection** or **Inversion of Control** (IoC). With the help of Spring Framework, we can develop a **loosely** coupled application. It is better to use if application type or characteristics are purely defined.
+
+**Spring Boot:** Spring Boot is a module of Spring Framework. It allows us to build a stand-alone application with minimal or zero configurations. It is better to use if we want to develop a simple Spring-based application or RESTful services.
+
+The primary comparison between Spring and Spring Boot are discussed below:
+
+### **Spring Boot vs. Spring MVC:**
+
+**Spring Boot:** Spring Boot makes it easy to quickly bootstrap and start developing a Spring-based application. It avoids a lot of boilerplate code. It hides a lot of complexity behind the scene so that the developer can quickly get started and develop Spring-based applications easily.
+
+**Spring MVC:** Spring MVC is a Web MVC Framework for building web applications. It contains a lot of configuration files for various capabilities. It is an HTTP oriented web application development framework.
+
+Spring Boot and Spring MVC exist for different purposes. The primary comparison between Spring Boot and Spring MVC are discussed below:
+
+### **Spring Boot Architecture:**
+
+Spring Boot is a module of the Spring Framework. It is used to create stand-alone, production-grade Spring Based Applications with minimum efforts. It is developed on top of the core Spring Framework.
+
+Spring Boot follows a layered architecture in which each layer communicates with the layer directly below or above (hierarchical structure) it.
+
+Before understanding the **Spring Boot Architecture**, we must know the different layers and classes present in it. There are **four** layers in Spring Boot are as follows:
+
+- **Presentation Layer**
+- **Business Layer**
+- **Persistence Layer**
+- **Database Layer**
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/4e373191-8a78-4627-9230-d6a447c2bb27/Untitled.png)
+
+**Presentation Layer:** The presentation layer handles the HTTP requests, translates the JSON parameter to object, and authenticates the request and transfer it to the business layer. In short, it consists of **views** i.e., frontend part.
+
+**Business Layer:** The business layer handles all the **business logic**. It consists of service classes and uses services provided by data access layers. It also performs **authorization** and **validation**.
+
+**Persistence Layer:** The persistence layer contains all the **storage logic** and translates business objects from and to database rows.
+
+**Database Layer:** In the database layer, **CRUD** (create, retrieve, update, delete) operations are performed.
+
+### **Spring Boot Flow Architecture:**
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a38e055f-b5d9-455e-bd14-c9ce31817533/Untitled.png)
+
+# Web Services:
+
+**A java service that can be accessed over the web is known as Webservice.**
+
+Web-Application can also be accessed over the web but there are some differences:
+
+1. Web-Application is meant for the end-user and to be accessed by the browser in a human-readable format. whereas a Web Service is meant for applications to access the raw data in the form of XML, JSON, plain text, etc.
+2. A Web-Application can access the Web-Services to access some data or to perform some tasks. whereas a Web Service can not access a Web Application to get some data.
+3. A single Web-Service can be used by different kinds of applications (developed in any technology like Java, .Net, Angular, React, Phyton, etc.).
+whereas a Web Application is not meant for reusability.
+
+**Note:- One application can communicate with another application using Web Services, and 
+both applications can be developed in any technology, Java, .Net, Angular, React, Phyton).**
+
+In order to make web services as light-weight, an architectural style is defined named as **"REST” (Representational State transfer).**
+
+This Rest architectural style tells that create a web service with the required operation and expose them through the **HTTP protocol**. and allow them to be accessed by the client with the help of http protocol only without any binding classes and any XML files.
+
+Based on this architectural style sun-microsystem has released **JAX-RS** API for creating 
+**Restful web-services** in java.
+
+It does not define the standard message exchange format. We can build REST services with both XML and JSON. JSON is the more popular format with REST. The **key abstraction** is a resource in REST. A resource can be anything. It can be accessed through a **Uniform Resource Identifier (URI)**. For example:
+
+The resource has representations like XML, HTML, and JSON. The current state is capture by representational resources. When we request a resource, we provide the representation of the resource. The important methods of HTTP are:
+
+- **GET:** It reads a resource.
+- **PUT:** It updates an existing resource.
+- **POST:** It creates a new resource.
+- **DELETE:** It deletes the resource.
+
+For example, if we want to perform the following actions in the social media application, we get the corresponding results.
+
+**POST /users:** It creates a user.
+
+**GET /users/{id}:** It retrieves the detail of a user.
+
+**GET /users:** It retrieves the detail of all users.
+
+**DELETE /users:** It deletes all users.
+
+**DELETE /users/{id}:** It deletes a user.
+
+**GET /users/{id}/posts/post_id:** It retrieve the detail of a specific post.
+
+**POST / users/{id}/ posts:** It creates a post of the user.
+
+HTTP also defines the following standard status code:
+
+- **404:** RESOURCE NOT FOUND
+- **200:** SUCCESS
+- **201:** CREATED
+- **401:** UNAUTHORIZED
+- **500:** SERVER ERROR
+
+## Advantages of RESTful web services
+
+- RESTful web services are **platform-independent**.
+- It can be written in any programming language and can be executed on any platform.
+- It provides different data formats like **JSON, text, HTML,** and **XML**.
+- It is fast in comparison to SOAP because there is no strict specification like SOAP.
+- These are **reusable**.
+- They are **language neutral**.
+
+Spring framework itself has provided its own API with the implementation to make a Controller bean (Controller bean is the part of Spring-MVC based web application).  which is annotated with **@Controller** as a Restful web service class.
+
+### Converting Spring MVC controller bean as a Restful service:
+
+**@Controller  + @ResponseBody = @RestController**
+
+**Steps to create the first Spring boot REST web service :**
+
+Step 1:  Create a spring starter project on STS. 
+
+Step 2: select the spring web dependency, (This dependency will include an integrated Tomcat web server, in which our application will be deployed)
+
+Step 3: Creating a HelloWorld service:
+
+Create a new class with the name **HelloWorldController** inside the main package(com.masai).
+
+To make this class a Restful web service class, annotate this class with the following annotation:
+
+**@RestController**
+
+Step 4: Inside this class define the actual service ( a method that can perform some operation)
+
+we need to make this service (method) accessible with an URI by the help of **@RequestMapping annotation.** and we need to specify the appropriate HTTP method using which we want to expose this service.
+
+Example :
+
+ 
+
+```java
+package com.masai;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class HelloWorldController {
+	
+	@RequestMapping(value= "/hi",method = RequestMethod.GET)
+	public String sayHello() {
+		return "welcome"; // it will be represented as raw data.
+	}
+}
+```
+
+We can also improve the above code by using the **@GetMapping** annotation instead of @RequestMapping. Here the method specification is not required.
+
+Example:
+
+```java
+package com.masai;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class HelloWorldController {
+	
+	@GetMapping("/hi")
+	public String sayHello() {
+		return "welcome"; // it will be represented as raw data.
+	}
+}
+```
+
+Step 5: Change the port number of the Integrated Tomcat server (8080 is the most common port, it is recommended to change it).
+
+inside the **application.properties** file of the **src/main/resources** folder make the following entry:
+
+```java
+server.port = 8088
+```
+
+Step 6: run the main class of the spring boot project (in which main method is there) as a spring boot application.
+
+Step 7: from the browser give the following request from the URL.
+
+**http://localhost:8088/hi**
+
+**Enhancing the above Service to Return a Bean:**
+
+Create a Student.java file as java bean class
+
+```java
+package com.masai;
+
+public class Student {
+	
+	private Integer roll;
+	private String name;
+	private Integer marks;
+
+	public Student() {	
+	}
+	
+	public Student(Integer roll, String name, Integer marks) {
+		super();
+		this.roll = roll;
+		this.name = name;
+		this.marks = marks;
+	}
+	
+	public Integer getRoll() {
+		return roll;
+	}
+
+	public void setRoll(Integer roll) {
+		this.roll = roll;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Integer getMarks() {
+		return marks;
+	}
+
+	public void setMarks(Integer marks) {
+		this.marks = marks;
+	}
+}
+```
+
+Define a service that will return Student object in the form of JSON data.
+
+```java
+package com.masai;
+
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+@RestController
+public class HelloWorldController {
+	
+	@RequestMapping(value= "/hi",method = RequestMethod.GET)
+	public String sayHello() {
+		return "welcome"; // it will be represented as raw data.
+	}
+	
+	@GetMapping(value = "/student", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Student getStudent() {
+		Student student = new Student();
+		student.setRoll(10);
+		student.setName("Ram");
+		student.setMarks(850);
+		
+		return student;
+	}
+	
+}
+```
+
+Run the application and give the request from the browser:
+
+http://localhost:8088/student
+
+Output:
+
+```java
+{"roll":10,"name":"Ram","marks":850}
+```
+
+Note: while returning the response from the webservice methods spring f/w uses some of the **"message converters"** to convert the Java object into the domain format like JSON object, XML format, etc.
+
+The default conversion type is JSON type, here spring f/w uses "message converters" with the help of **Jackson API** internally. so defining **MediaType.APPLICATION_JSON_VALUE** is optional.
+
+Exmaple:
+
+```java
+@GetMapping(value = "/student")
+	public Student getStudent() {
+		Student student = new Student();
+		student.setRoll(10);
+		student.setName("Ram");
+		student.setMarks(850);
+		
+		return student;
+	}
+	
+}
+```
+
+Defining a service that return List of Student:
+
+```java
+@GetMapping(value = "/students")
+	public List<Student> getAllStudents() {
+		
+		List<Student> students = new ArrayList<Student>();
+		
+		students.add(new Student(10, "Ram", 850));
+		students.add(new Student(12, "Ramesh", 650));
+		students.add(new Student(13, "Ravi", 750));
+		students.add(new Student(14, "amit", 950));
+		
+		return students;
+		
+	}
+```
+
+http://localhost:8088/students
+
+Output: 
+
+```java
+[
+	{"roll":10,"name":"Ram","marks":850},
+	{"roll":12,"name":"Ramesh","marks":650},
+	{"roll":13,"name":"Ravi","marks":750},
+	{"roll":14,"name":"amit","marks":950}
+]
+```
+
+Note: The above mapping information we can provide by following ways, all the same:
+
+```java
+	1. @RequestMapping("/students")
+	2. @RequestMapping(value = "/students", method = RequestMethod.GET)
+	3. @GetMapping("/studsnts") // it is the sortcut
+  4. @RequestMapping(value = "/students",method = RequestMethod.GET,produces = "application/json")
+	5. @RequestMapping(value = "/students",method = RequestMethod.GET,produces =MediaType.APPLICATION_JSON_VALUE)
+```
+
+Note: After every change, we need to restart the server to deploy the application. If we want every change will automatically redeploy the application then we need to add the following dependency inside the pom.xml:
+
+```java
+<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-devtools</artifactId>
+    <version>2.6.6</version>
+</dependency>
+```
+
+**Note: @RequestMapping  annotation we can apply to the root resource (to the Controller class) also.**
+
+Exmaple:
+
+```java
+@RestController
+@RequestMapping("/studentapp")   // to the root resource
+public class HelloWorldController {
+	
+	@GetMapping(value = "/student")
+	public Student getStudent() {
+		Student student = new Student();
+		student.setRoll(10);
+		student.setName("Ram");
+		student.setMarks(850);
+		
+		return student;
+	}
+	
+}
+```
+
+Now we need to give the request to our service as follows:
+
+```java
+http://localhost:8088/studentapp/student
+```
